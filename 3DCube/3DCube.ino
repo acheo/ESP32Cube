@@ -11,6 +11,11 @@ TFT_eSprite sprite = TFT_eSprite(&tft);
 int16_t h;
 int16_t w;
 
+long frame = 0;
+unsigned long last;
+
+String msg = "0";
+
 int inc = -2;
 
 float xx, xy, xz;
@@ -56,13 +61,15 @@ Line3d Lines[20];
 Line2d Render[20];
 
 void setup() {
+  Serial.begin(115200);
+  last = millis();
 
   tft.init();
 
   h = tft.height();
   w = tft.width();
 
-  tft.setRotation(1);
+  tft.setRotation(0);
 
   tft.fillScreen(TFT_BLACK);
 
@@ -81,6 +88,21 @@ void setup() {
 }
 
 void loop() {
+
+  unsigned long elapsed = millis() - last;
+
+  if (elapsed > 1000){
+    float fps = (float)frame/((float)elapsed * 0.001f);
+    msg = String((int)floor(fps));
+
+    Serial.println(frame);
+    Serial.println(elapsed);
+
+    frame = 0;
+    last = millis();
+
+    Serial.println(fps);
+  }
 
   // Rotate around x and y axes in 1 degree increments
   Xan++;
@@ -104,19 +126,26 @@ void loop() {
   RenderImage(); // go draw it!
 
   //delay(14); // Delay to reduce loop rate (reduces flicker caused by aliasing with TFT screen refresh rate)
+  frame++;
 }
 
-void RenderImage( void)
+void RenderImage()
 {
 
   sprite.fillSprite(TFT_BLACK);
+
+  sprite.setTextDatum(4);
+  sprite.setTextSize(4);
+  sprite.drawString(msg,64,64);
 
   for (int i = 0; i < LinestoRender; i++ )
   {
     uint16_t color = TFT_BLUE;
     if (i < 4) color = TFT_RED;
     if (i > 7) color = TFT_GREEN;
-    sprite.drawLine(Render[i].p0.x, Render[i].p0.y, Render[i].p1.x, Render[i].p1.y, color);
+    //sprite.drawLine(Render[i].p0.x, Render[i].p0.y, Render[i].p1.x, Render[i].p1.y, color);
+
+    sprite.drawWideLine(Render[i].p0.x, Render[i].p0.y, Render[i].p1.x, Render[i].p1.y, 4.0f, color);
   }
 
   sprite.pushSprite(0,0);
@@ -124,7 +153,7 @@ void RenderImage( void)
 
 // Sets the global vars for the 3d transform. Any points sent through "process" will be transformed using these figures.
 // only needs to be called if Xan or Yan are changed.
-void SetVars(void)
+void SetVars()
 {
   float Xan2, Yan2, Zan2;
   float s1, s2, s3, c1, c2, c3;
@@ -226,7 +255,7 @@ void ProcessLine(struct Line2d *ret, struct Line3d vec)
 }
 
 // line segments to draw a cube. basically p0 to p1. p1 to p2. p2 to p3 so on.
-void cube(void)
+void cube()
 {
   // Front Face.
 
