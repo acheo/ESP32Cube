@@ -7,6 +7,7 @@
 
 TFT_eSPI tft = TFT_eSPI();       // Invoke custom library
 TFT_eSprite sprite = TFT_eSprite(&tft);
+TFT_eSprite hflipsprite = TFT_eSprite(&tft);
 
 int16_t h;
 int16_t w;
@@ -74,8 +75,10 @@ void setup() {
   tft.fillScreen(TFT_BLACK);
 
   sprite.createSprite(128,128);
+  hflipsprite.createSprite(128,128);
   sprite.setTextColor(TFT_WHITE,TFT_BLACK);
   sprite.fillSprite(TFT_BLACK);
+  hflipsprite.fillSprite(TFT_BLACK);
   sprite.pushSprite(0,0);
 
   cube();
@@ -135,7 +138,9 @@ void RenderImage()
   sprite.fillSprite(TFT_BLACK);
 
   sprite.setTextDatum(4);
-  sprite.setTextSize(4);
+  //sprite.setTextSize(4);
+  //sprite.setTextColor(TFT_DARKGREY);
+  sprite.setTextFont(6);
   sprite.drawString(msg,64,64);
 
   for (int i = 0; i < LinestoRender; i++ )
@@ -148,7 +153,16 @@ void RenderImage()
     sprite.drawWideLine(Render[i].p0.x, Render[i].p0.y, Render[i].p1.x, Render[i].p1.y, 4.0f, color);
   }
 
-  sprite.pushSprite(0,0);
+  //sprite.pushSprite(0,0);
+
+  for (int y=0;y<128;y++){
+    for (int x=0;x<128;x++){
+        hflipsprite.drawPixel(x, y, sprite.readPixel(x, 128-y));
+    }
+  }
+
+  hflipsprite.pushSprite(0,0);
+
 }
 
 // Sets the global vars for the 3d transform. Any points sent through "process" will be transformed using these figures.
