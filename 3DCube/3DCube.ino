@@ -39,7 +39,6 @@ struct Point2d
 };
 
 int LinestoRender; // lines to render.
-int OldLinestoRender; // lines to render just in case it changes. this makes sure the old lines all get erased.
 
 struct Line3d
 {
@@ -55,9 +54,7 @@ struct Line2d
 
 Line3d Lines[20];
 Line2d Render[20];
-Line2d ORender[20];
 
-/***********************************************************************************************************************************/
 void setup() {
 
   tft.init();
@@ -83,7 +80,6 @@ void setup() {
   Zoff = 550; // Z offset in 3D space (smaller = closer and bigger rendering)
 }
 
-/***********************************************************************************************************************************/
 void loop() {
 
   // Rotate around x and y axes in 1 degree increments
@@ -99,11 +95,10 @@ void loop() {
   // the cube intersects with the screen for values < 160
   Zoff += inc; 
   if (Zoff > 500) inc = -1;     // Switch to zoom in
-  else if (Zoff < 160) inc = 1; // Switch to zoom out
+  else if (Zoff < 350) inc = 1; // Switch to zoom out
 
   for (int i = 0; i < LinestoRender ; i++)
   {
-    ORender[i] = Render[i]; // stores the old line segment so we can delete it later.
     ProcessLine(&Render[i], Lines[i]); // converts the 3d line segments to 2d.
   }
   RenderImage(); // go draw it!
@@ -111,19 +106,10 @@ void loop() {
   //delay(14); // Delay to reduce loop rate (reduces flicker caused by aliasing with TFT screen refresh rate)
 }
 
-/***********************************************************************************************************************************/
 void RenderImage( void)
 {
-  // renders all the lines after erasing the old ones.
-  // in here is the only code actually interfacing with the OLED. so if you use a different lib, this is where to change it.
-  sprite.fillSprite(TFT_BLACK);
 
-/*
-  for (int i = 0; i < OldLinestoRender; i++ )
-  {
-    tft.drawLine(ORender[i].p0.x, ORender[i].p0.y, ORender[i].p1.x, ORender[i].p1.y, BLACK); // erase the old lines.
-  }
-*/
+  sprite.fillSprite(TFT_BLACK);
 
   for (int i = 0; i < LinestoRender; i++ )
   {
@@ -132,12 +118,10 @@ void RenderImage( void)
     if (i > 7) color = TFT_GREEN;
     sprite.drawLine(Render[i].p0.x, Render[i].p0.y, Render[i].p1.x, Render[i].p1.y, color);
   }
-  //OldLinestoRender = LinestoRender;
 
   sprite.pushSprite(0,0);
 }
 
-/***********************************************************************************************************************************/
 // Sets the global vars for the 3d transform. Any points sent through "process" will be transformed using these figures.
 // only needs to be called if Xan or Yan are changed.
 void SetVars(void)
@@ -169,8 +153,6 @@ void SetVars(void)
   zz = (c1 * c2);
 }
 
-
-/***********************************************************************************************************************************/
 // processes x1,y1,z1 and returns rx1,ry1 transformed by the variables set in SetVars()
 // fairly heavy on floating point here.
 // uses a bunch of global vars. Could be rewritten with a struct but not worth the effort.
@@ -243,7 +225,6 @@ void ProcessLine(struct Line2d *ret, struct Line3d vec)
 
 }
 
-/***********************************************************************************************************************************/
 // line segments to draw a cube. basically p0 to p1. p1 to p2. p2 to p3 so on.
 void cube(void)
 {
@@ -340,7 +321,6 @@ void cube(void)
   Lines[11].p1.z = -50;
 
   LinestoRender = 12;
-  OldLinestoRender = LinestoRender;
 
 }
 
