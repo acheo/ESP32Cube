@@ -92,7 +92,11 @@ void setup() {
 
 void loop() {
 
+
   unsigned long elapsed = millis() - last;
+
+  unsigned long frameStart = millis();
+
 
   if (elapsed > 1000){
     float fps = (float)frame/((float)elapsed * 0.001f);
@@ -129,7 +133,16 @@ void loop() {
   RenderImage(); // go draw it!
 
   //delay(14); // Delay to reduce loop rate (reduces flicker caused by aliasing with TFT screen refresh rate)
+  
   frame++;
+
+
+  unsigned long frameTime = millis() - frameStart;
+
+  if (frameTime < 33) {
+    delay(33 - frameTime);
+  }
+
 }
 
 void RenderImage()
