@@ -170,7 +170,7 @@ void RenderImage()
 
   for (int y=0;y<128;y++){
     for (int x=0;x<128;x++){
-        hflipsprite.drawPixel(x, y, sprite.readPixel(x, 128-y));
+        hflipsprite.drawPixel(x, y, sprite.readPixel(x, 127-y));
     }
   }
 
