@@ -1,11 +1,6 @@
-#define BLACK 0x0000
-#define WHITE 0xFFFF
+#include <TFT_eSPI.h>
 
-#include <SPI.h>
-
-#include <TFT_eSPI.h> // Hardware-specific library
-
-TFT_eSPI tft = TFT_eSPI();       // Invoke custom library
+TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite sprite = TFT_eSprite(&tft);
 TFT_eSprite hflipsprite = TFT_eSprite(&tft);
 
@@ -102,13 +97,9 @@ void loop() {
     float fps = (float)frame/((float)elapsed * 0.001f);
     msg = String((int)floor(fps));
 
-    Serial.println(frame);
-    Serial.println(elapsed);
-
     frame = 0;
     last = millis();
 
-    Serial.println(fps);
   }
 
   // Rotate around x and y axes in 1 degree increments
@@ -166,7 +157,6 @@ void RenderImage()
     sprite.drawWideLine(Render[i].p0.x, Render[i].p0.y, Render[i].p1.x, Render[i].p1.y, 4.0f, color);
   }
 
-  //sprite.pushSprite(0,0);
 
   for (int y=0;y<128;y++){
     for (int x=0;x<128;x++){
