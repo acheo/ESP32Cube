@@ -10,6 +10,8 @@ int16_t w;
 long frame = 0;
 unsigned long last;
 
+float fps = 1.0;
+
 String msg = "0";
 
 int inc = -2;
@@ -65,12 +67,12 @@ void setup() {
   h = tft.height();
   w = tft.width();
 
-  tft.setRotation(0);
+  tft.setRotation(1); // modified TFT_eSPI\TFT_Drivers\ILI9163_Rotation.h to: TFT_MAD_MV | TFT_MAD_MX | TFT_MAD_MY | TFT_MAD_BGR
 
-  tft.fillScreen(TFT_BLACK);
+  tft.fillScreen(TFT_WHITE);
 
-  sprite.createSprite(128,128);
-  hflipsprite.createSprite(128,128);
+  sprite.createSprite(132,132);
+  hflipsprite.createSprite(132,132);
   sprite.setTextColor(TFT_WHITE,TFT_BLACK);
   sprite.fillSprite(TFT_BLACK);
   hflipsprite.fillSprite(TFT_BLACK);
@@ -90,12 +92,12 @@ void loop() {
 
   unsigned long elapsed = millis() - last;
 
-  unsigned long frameStart = millis();
+  unsigned long frameStart = micros();
 
 
-  if (elapsed > 1000){
-    float fps = (float)frame/((float)elapsed * 0.001f);
-    msg = String((int)floor(fps));
+  if (frame >= 30){
+    fps = (float)frame/((float)elapsed * 0.001f);
+    msg = String((int)ceil(fps));
 
     frame = 0;
     last = millis();
@@ -128,10 +130,11 @@ void loop() {
   frame++;
 
 
-  unsigned long frameTime = millis() - frameStart;
+  unsigned long frameTime = micros() - frameStart;
 
-  if (frameTime < 33) {
-    delay(33 - frameTime);
+
+  if (frameTime < 20000) {
+    delayMicroseconds(20000 - frameTime);
   }
 
 }
@@ -149,22 +152,15 @@ void RenderImage()
 
   for (int i = 0; i < LinestoRender; i++ )
   {
-    uint16_t color = TFT_BLUE;
+    uint16_t color = TFT_RED;
     if (i < 4) color = TFT_RED;
-    if (i > 7) color = TFT_GREEN;
+    if (i > 7) color = TFT_RED;
     //sprite.drawLine(Render[i].p0.x, Render[i].p0.y, Render[i].p1.x, Render[i].p1.y, color);
 
     sprite.drawWideLine(Render[i].p0.x, Render[i].p0.y, Render[i].p1.x, Render[i].p1.y, 4.0f, color);
   }
 
-
-  for (int y=0;y<128;y++){
-    for (int x=0;x<128;x++){
-        hflipsprite.drawPixel(x, y, sprite.readPixel(x, 127-y));
-    }
-  }
-
-  hflipsprite.pushSprite(0,0);
+  sprite.pushSprite(0,0);
 
 }
 
