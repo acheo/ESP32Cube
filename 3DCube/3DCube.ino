@@ -2,7 +2,6 @@
 
 TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite sprite = TFT_eSprite(&tft);
-TFT_eSprite hflipsprite = TFT_eSprite(&tft);
 
 int16_t h;
 int16_t w;
@@ -69,13 +68,11 @@ void setup() {
 
   tft.setRotation(1); // modified TFT_eSPI\TFT_Drivers\ILI9163_Rotation.h to: TFT_MAD_MV | TFT_MAD_MX | TFT_MAD_MY | TFT_MAD_BGR
 
-  tft.fillScreen(TFT_WHITE);
+  tft.fillScreen(TFT_BLACK);
 
   sprite.createSprite(132,132);
-  hflipsprite.createSprite(132,132);
   sprite.setTextColor(TFT_WHITE,TFT_BLACK);
   sprite.fillSprite(TFT_BLACK);
-  hflipsprite.fillSprite(TFT_BLACK);
   sprite.pushSprite(0,0);
 
   cube();
