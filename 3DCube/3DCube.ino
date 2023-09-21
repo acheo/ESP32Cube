@@ -100,7 +100,12 @@ void loop() {
 
     frame = 0;
     last = millis();
-
+    #ifdef RGB_BUILTIN
+      int red = rand() % 255;
+      int green = rand() % 255;
+      int blue = rand() % 255;
+      neopixelWrite(RGB_BUILTIN,red/100,green/100,blue/100);
+    #endif
   }
 
   // Rotate around x and y axes in 1 degree increments
