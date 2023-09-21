@@ -92,9 +92,11 @@ void loop() {
   unsigned long frameStart = micros();
 
 
-  if (frame >= 30){
+  if (frame >= 100){
     fps = (float)frame/((float)elapsed * 0.001f);
-    msg = String((int)ceil(fps));
+
+    //Serial.println(fps);
+    msg = String((int)floor(fps));
 
     frame = 0;
     last = millis();
@@ -130,8 +132,8 @@ void loop() {
   unsigned long frameTime = micros() - frameStart;
 
 
-  if (frameTime < 20000) {
-    delayMicroseconds(20000 - frameTime);
+  if (frameTime < 19630) {
+    delayMicroseconds(19630 - frameTime);
   }
 
 }
