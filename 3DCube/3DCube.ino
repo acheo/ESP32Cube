@@ -66,7 +66,7 @@ void setup() {
   h = tft.height();
   w = tft.width();
 
-  tft.setRotation(1); // modified TFT_eSPI\TFT_Drivers\ILI9163_Rotation.h to: TFT_MAD_MV | TFT_MAD_MX | TFT_MAD_MY | TFT_MAD_BGR
+  tft.setRotation(0); // modified TFT_eSPI\TFT_Drivers\ILI9163_Rotation.h to: TFT_MAD_MY | TFT_MAD_BGR
 
   tft.fillScreen(TFT_BLACK);
 
